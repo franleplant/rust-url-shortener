@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 harsh = { version = "*" }
 rand = { version = "*" }
+actix-web = { version = "*" }
