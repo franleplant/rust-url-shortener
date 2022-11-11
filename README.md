@@ -6,7 +6,7 @@ A fun learning exercise with Rust
 
 ```bash
 
-docker run --name url_shortener -e POSTGRES_PASSWORD=postgres -p 54321:5432  -d postgres:13.7
+docker run --name url_shortener -e POSTGRES_PASSWORD=postgres -p 54321:5432  -v $(pwd)/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d -d postgres:13.7
 
 // try out the connection (requires local postgres installed)
 psql -p 54321 postgres://postgres:postgres@localhost/postgres
