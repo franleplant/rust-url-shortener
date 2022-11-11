@@ -10,3 +10,4 @@ harsh = { version = "*" }
 rand = { version = "*" }
 actix-web = { version = "*" }
 serde = { version = "*", features = ["derive"] }
+sqlx = { version = "0.6", features = ["runtime-tokio-rustls", "postgres"] }
