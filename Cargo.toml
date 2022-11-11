@@ -9,3 +9,4 @@ edition = "2021"
 harsh = { version = "*" }
 rand = { version = "*" }
 actix-web = { version = "*" }
+serde = { version = "*", features = ["derive"] }

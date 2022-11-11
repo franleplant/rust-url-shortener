@@ -1,5 +1,6 @@
 use actix_web::{get, post, web, App, HttpRequest, HttpResponse, HttpServer, Responder};
 use harsh::Harsh;
+use serde::Deserialize;
 
 // creat a new harshid
 fn get_id() -> String {
@@ -8,20 +9,30 @@ fn get_id() -> String {
     harsh.encode(&random_vec)
 }
 
-/* fn main() {
-    println!("Hello, world! {}", get_id());
-    println!("Hello, world! {}", get_id());
-    println!("Hello, world! {}", get_id());
-} */
-
 #[get("/")]
 async fn hello() -> impl Responder {
     HttpResponse::Ok().body("Hello world!")
 }
 
-#[post("/echo")]
-async fn echo(req_body: String) -> impl Responder {
-    HttpResponse::Ok().body(req_body)
+#[get("/{id}")]
+async fn get_shorten_url(path: web::Path<String>) -> impl Responder {
+    let id = path.into_inner();
+    println!("id: {}", id);
+    HttpResponse::PermanentRedirect()
+        .append_header(("Location", "https://www.google.com"))
+        .finish()
+}
+
+#[derive(std::fmt::Debug, Deserialize)]
+struct ShortenUrl {
+    url: String,
+}
+
+#[post("/shorturl")]
+async fn shorten_url(payload: web::Json<ShortenUrl>) -> impl Responder {
+    println!("{:?}", payload);
+    let id = get_id();
+    HttpResponse::Ok().body(id)
 }
 
 #[actix_web::main]
@@ -31,8 +42,13 @@ async fn main() -> std::io::Result<()> {
 
     println!("Starting server at http://{}:{}", HOST, PORT);
 
-    HttpServer::new(|| App::new().service(hello).service(echo))
-        .bind((HOST, PORT))?
-        .run()
-        .await
+    HttpServer::new(|| {
+        App::new()
+            .service(hello)
+            .service(shorten_url)
+            .service(get_shorten_url)
+    })
+    .bind((HOST, PORT))?
+    .run()
+    .await
 }
